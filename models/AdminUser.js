@@ -15,7 +15,8 @@ const adminUserSchema = new mongoose.Schema({
         couponsManagement: { type: Boolean, default: false },
         inventoryManagement: { type: Boolean, default: false },
         analyticsManagement: { type: Boolean, default: false },
-        marketingManagement: { type: Boolean, default: false }
+        marketingManagement: { type: Boolean, default: false },
+        designLab: { type: Boolean, default: false },
     },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false }
