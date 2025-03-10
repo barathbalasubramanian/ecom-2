@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
     variantName: { type: String },
     variantId: { type: mongoose.Schema.Types.ObjectId, ref: 'Variant' },
     description: { type: String },
-    standardSize: { type: String },
+    standardSize: [{ type: String }],
     customization: { type: Boolean, default: false },
     customizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customization' },
     stock: { type: Number, required: true, default: 0 },
@@ -16,11 +16,11 @@ const productSchema = new mongoose.Schema({
     tags: [{ type: String }],
     tax: { type: Number },
     couponCode: { type: String },
-    couponMethod: { type: String },
     color: { type: String },
     availability: { type: Boolean, default: true },
     images: [{ type: String }],
     isDeleted: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    isDesignLab: { type: Boolean, default: false }
 });
 module.exports = mongoose.model('Product', productSchema);

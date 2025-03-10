@@ -17,6 +17,7 @@ const adminUserSchema = new mongoose.Schema({
         analyticsManagement: { type: Boolean, default: false },
         marketingManagement: { type: Boolean, default: false },
         designLab: { type: Boolean, default: false },
+        userManagement: { type: Boolean, default: false },
     },
     isActive: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false }

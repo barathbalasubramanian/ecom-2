@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const customizationSchema = new mongoose.Schema({
     selectSize: {
-        shoulder: { type: String },
-        chest: { type: String },
-        bust: { type: String },
-        underBust: { type: String },
-        waist: { type: String },
-        hip: { type: String },
-        underArm: { type: String }
+        shoulder: [{ type: String }],
+        chest: [{ type: String }],
+        bust: [{ type: String }],
+        underBust: [{ type: String }],
+        waist: [{ type: String }],
+        hip: [{ type: String }],
+        underArm: [{ type: String }]
     },
     customizationType: [{
         typeName: { type: String, required: true },
