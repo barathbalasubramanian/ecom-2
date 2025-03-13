@@ -74,7 +74,7 @@ const loginAdminUser = async (req, res) => {
 
 const updateAdminUser = async (req, res) => {
     const { id } = req.params;
-    const { username, password, address, permissions, isDeleted, isActive } = req.body;
+    const { username, password, address, permissions, isDeleted, isActive, phoneNumber, email } = req.body;
 
     if (!id) {
         return res.status(400).json({ message: 'User ID is required' });
@@ -87,6 +87,8 @@ const updateAdminUser = async (req, res) => {
         }
 
         if (username) user.username = username;
+        if (email) user.email = email;
+        if (phoneNumber) user.phoneNumber = phoneNumber;
         if (password) user.password = password;
         if (address) user.address = address;
         if (permissions) user.permissions = permissions;

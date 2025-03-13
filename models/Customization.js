@@ -12,8 +12,9 @@ const customizationSchema = new mongoose.Schema({
     },
     customizationType: [{
         typeName: { type: String, required: true },
-        standardImage: { type: String, required: true },
-        productImage: { type: String, required: true }
+        standardImage: { type: String},
+        productImage: { type: String },
+        options: [{ type: String, default: [] }],
     }],
     createdAt: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false }

@@ -26,10 +26,20 @@ exports.createProduct = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-
+    
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.find({ isDeleted: false })
+        const products = await Product.find({ isDeleted: false, isDesignLab: false })
+            .populate('categoryId variantId customizationId');
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getProductsDesign = async (req, res) => {
+    try {
+        const products = await Product.find({ isDeleted: false, isDesignLab: true })
             .populate('categoryId variantId customizationId');
         res.status(200).json(products);
     } catch (error) {
