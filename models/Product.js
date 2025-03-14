@@ -22,6 +22,15 @@ const productSchema = new mongoose.Schema({
     images: [{ type: String }],
     isDeleted: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
-    isDesignLab: { type: Boolean, default: false }
+
+    // Design Lab
+    isDesignLab: { type: Boolean, default: false },
+    letterPrintingColor: { type: String },
+    letterPrintingText: { type: String },
+    productColor: { type: String },
+    kidsSize: [{ type: String }],
+    adultsSize: [{ type: String }],
+    youthSize: [{ type: String }],
+    womenSize: [{ type: String }],
 });
 module.exports = mongoose.model('Product', productSchema);
