@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
     standardSize: [{ type: String }],
     customization: { type: Boolean, default: false },
     customizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customization' },
-    stock: { type: Number, required: true, default: 0 },
+    stock: { type: Number },
     status: { type: String, default: "In Stock", enum: ["In Stock", "Out of Stock"] },
     actualPrice: { type: Number, required: true },
     sellingPrice: { type: Number, required: true },
