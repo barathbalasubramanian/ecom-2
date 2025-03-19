@@ -9,6 +9,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const marketingRoutes = require('./routes/marketingRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const couponRoutes = require('./routes/couponRoutes');
+const addressBookRoutes = require('./routes/addressBookRoutes');
 const connectDB = require('./config/db');
 // const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 require('dotenv').config();
@@ -36,6 +37,7 @@ app.use('/orders', orderRoutes);
 app.use('/coupons', couponRoutes);
 
 app.use('/auth', authRoutes);
+app.use('/addressBook', addressBookRoutes);
 app.use('/api/admin', adminRoutes);
 
 // app.get("/checkout-session/:id", async (req, res) => {

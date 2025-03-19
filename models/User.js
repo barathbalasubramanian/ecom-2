@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    address: { type: String }
+    address: { type: String },
+    addressBook: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AddressBook' }],
 });
 
 userSchema.pre('save', async function (next) {
