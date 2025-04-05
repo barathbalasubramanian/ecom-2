@@ -32,5 +32,6 @@ const productSchema = new mongoose.Schema({
     adultsSize: [{ type: String }],
     youthSize: [{ type: String }],
     womenSize: [{ type: String }],
+    productFallson: { type: String, enum: ["New Arrival", "Sale", "Normal"] },
 });
 module.exports = mongoose.model('Product', productSchema);

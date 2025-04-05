@@ -156,3 +156,16 @@ exports.getFilteredProducts = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getFeaturedProducts = async (req, res) => {
+    try {
+        const products = await Product.find({ 
+            isDeleted: false,
+            productFallson: { $in: ["New Arrival", "Sale"] }
+        }).populate('categoryId variantId customizationId');
+        
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
