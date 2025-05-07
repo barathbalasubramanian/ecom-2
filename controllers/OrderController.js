@@ -2,53 +2,105 @@ const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
 
 exports.createOrder = async (req, res) => {
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
+    const { orderData, timestamp } = req.body;
 
-    if (orderItems && orderItems.length === 0) {
+    if (!orderData || !orderData.items || orderData.items.length === 0) {
         return res.status(400).json({ message: 'No order items' });
     }
 
     try {
         const Product = require('../models/Product');
         
-        for (const item of orderItems) {
-            const product = await Product.findById(item.product);
-            if (!product) {
-                return res.status(404).json({ 
-                    message: `Product not found: ${item.product}` 
-                });
-            }
-            if (product.stock < item.qty) {
-                return res.status(400).json({ 
-                    message: `Insufficient stock for product: ${product.productName}. Available: ${product.stock}, Requested: ${item.qty}` 
-                });
+        // Calculate prices
+        const itemsPrice = orderData.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const taxPrice = itemsPrice * 0.18; // 18% tax
+        const shippingPrice = orderData.customerInfo.shippingMethod === 'express' ? 200 : 100;
+        const totalPrice = itemsPrice + taxPrice + shippingPrice;
+
+        // Format shipping address according to schema requirements
+        const shippingAddress = {
+            firstName: orderData.customerInfo.firstName,
+            lastName: orderData.customerInfo.lastName,
+            email: orderData.customerInfo.email,
+            phoneNumber: orderData.customerInfo.phone,
+            addressLine1: orderData.customerInfo.address1,
+            addressLine2: orderData.customerInfo.address2,
+            city: orderData.customerInfo.city,
+            state: 'Tamil Nadu', // Default state
+            pincode: orderData.customerInfo.postal,
+            country: 'India'
+        };
+
+        for (const item of orderData.items) {
+            // Skip stock check for custom products
+            if (!item.id.startsWith('custom-')) {
+                const product = await Product.findById(item.id);
+                if (!product) {
+                    return res.status(404).json({ 
+                        message: `Product not found: ${item.id}` 
+                    });
+                }
+                if (product.stock < item.quantity) {
+                    return res.status(400).json({ 
+                        message: `Insufficient stock for product: ${product.productName}. Available: ${product.stock}, Requested: ${item.quantity}` 
+                    });
+                }
             }
         }
 
         const createdOrderItems = [];
-        for (const item of orderItems) {
-            const product = await Product.findById(item.product);
-            product.stock -= item.qty;
-            await product.save();
+        for (const item of orderData.items) {
+            if (!item.id.startsWith('custom-')) {
+                // Handle regular products
+                const product = await Product.findById(item.id);
+                product.stock -= item.quantity;
+                await product.save();
 
-            const orderItem = await OrderItem.create({
-                product: item.product,
-                name: item.name,
-                qty: item.qty,
-                price: item.price,
-                image: item.image
-            });
-            createdOrderItems.push(orderItem);
+                const orderItem = await OrderItem.create({
+                    product: item.id,
+                    name: item.name,
+                    qty: item.quantity,
+                    price: item.price,
+                    image: item.image,
+                    selectedSize: item.selectedSize,
+                    measurements: item.measurements,
+                    customSize: item.customSize,
+                });
+                createdOrderItems.push(orderItem);
+            } else {
+                // Handle custom products
+                const orderItem = await OrderItem.create({
+                    product: item.id,
+                    name: item.name,
+                    qty: item.quantity,
+                    price: item.price,
+                    image: item.images.front, // Using front image as main image
+                    isCustom: true,
+                    customizationDetails: {
+                        color: item.color,
+                        designs: item.designs,
+                        images: item.images
+                    }
+                });
+                createdOrderItems.push(orderItem);
+            }
         }
 
         const order = new Order({
             orderItems: createdOrderItems.map(item => item._id),
             shippingAddress,
-            paymentMethod,
+            paymentMethod: 'COD', // Default payment method
             itemsPrice,
             taxPrice,
             shippingPrice,
-            totalPrice
+            totalPrice,
+            customerInfo: {
+                firstName: orderData.customerInfo.firstName,
+                lastName: orderData.customerInfo.lastName,
+                email: orderData.customerInfo.email,
+                phone: orderData.customerInfo.phone
+            },
+            createdAt: timestamp
         });
 
         const createdOrder = await order.save();

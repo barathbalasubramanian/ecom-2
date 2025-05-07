@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
 
     // Design Lab
     isDesignLab: { type: Boolean, default: false },
+    designLabProducts: [{
+        color: { type: String, required: true },
+        images: [{ type: String, required: true }]
+    }],
     letterPrintingColor: { type: String },
     letterPrintingText: { type: String },
     productColor: { type: String },
